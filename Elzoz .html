@@ -1,0 +1,127 @@
+<meta name='viewport' content='width=device-width, initial-scale=1'/><!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Animation</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@900&display=swap');
+
+        body {
+            background: #000;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        .container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            transform-style: preserve-3d;
+        }
+
+        /* القلب */
+        .heart-container {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            filter: drop-shadow(0 0 50px #ff0066);
+            z-index: 2;
+        }
+
+        .heart {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            animation: heartbeat 1.2s ease-in-out infinite;
+            background: radial-gradient(circle at 50% 30%, #ff3355 10%, #cc0022 50%, #8a0018 90%);
+            clip-path: url(#heart-shape);
+            border-radius: 20px;
+            transform-style: preserve-3d;
+            box-shadow: inset 0px -10px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        /* النصوص المتحركة الخارجة من القلب */
+        .floating-name {
+            position: absolute;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8em;
+            color: #ff0066;
+            text-shadow: 0 0 20px #ff0066;
+            mix-blend-mode: screen;
+            animation: floatUp 5s linear infinite;
+            opacity: 0;
+        }
+
+        /* أنيميشن حركة النصوص */
+        @keyframes floatUp {
+            0% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(0, -300px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        /* أنيميشن نبض القلب */
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1) rotateX(5deg); }
+            15% { transform: scale(1.15) rotateX(8deg); }
+            50% { transform: scale(1.08) rotateX(6deg); }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="heart-container">
+            <svg width="0" height="0">
+                <defs>
+                    <clipPath id="heart-shape">
+                        <path d="M150 50 C100 0, 50 50, 50 100 C50 150, 100 200, 150 250 C200 200, 250 150, 250 100 C250 50, 200 0, 150 50 Z"/>
+                    </clipPath>
+                </defs>
+            </svg>
+            <div class="heart"></div>
+        </div>
+    </div>
+
+    <script>
+        function createFloatingNames() {
+            const container = document.querySelector('.container');
+
+            for (let i = 0; i < 20; i++) { // عدد الأسماء التي ستخرج من القلب
+                setTimeout(() => {
+                    const name = document.createElement('div');
+                    name.classList.add('floating-name');
+
+                    // تحديد اسم عشوائي بين Ziad و Dana
+                    name.textContent = Math.random() > 0.5 ? "Ziad" : "Dana";
+
+                    // وضع الاسم في موقع عشوائي حول القلب
+                    const randomX = Math.random() * 100 - 50;
+                    const randomY = Math.random() * 50 - 25;
+
+                    name.style.left = `calc(50% + ${randomX}px)`;
+                    name.style.top = `calc(50% + ${randomY}px)`;
+                    name.style.animationDuration = `${Math.random() * 2 + 3}s`;
+
+                    container.appendChild(name);
+
+                    setTimeout(() => name.remove(), 5000);
+                }, i * 500);
+            }
+        }
+
+        setInterval(createFloatingNames, 1500);
+    </script>
+</body>
+</html>
